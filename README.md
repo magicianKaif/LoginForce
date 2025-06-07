@@ -35,7 +35,7 @@ pip install requests pyfiglet
 ## ðŸ› ï¸ Usage
 
 ```bash
-python login_force.py -u <URL> -U <USERNAME> -P <PASSWORD_LIST> [-p <PROXY_FILE>]
+python loginforce.py -u <URL> -U <USERNAME> -P <PASSWORD_LIST> [-p <PROXY_FILE>]
 ```
 
 ### Arguments
@@ -62,12 +62,12 @@ socks5h://127.0.0.1:9050
 ### ðŸ“Œ Example
 
 ```bash
-python login_force.py -u http://example.com/login -U admin -P passwords.txt
+python loginforce.py -u http://example.com/login -U admin -P passwords.txt
 ```
 
 With proxy file:
 ```bash
-python login_force.py -u http://example.com/login -U admin -P passwords.txt -p proxies.txt
+python loginforce.py -u http://example.com/login -U admin -P passwords.txt -p proxies.txt
 ```
 
 ---
